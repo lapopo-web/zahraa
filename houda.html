@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>19 lettres — Joyeux 19 ans 🎉</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bordeaux: #6b1f2b; /* bordeaux profond */
+    --bordeaux-2: #7f2431;
+    --gold: #d4af37; /* doré */
+    --cream: #fff8f2;
+    --glass: rgba(255,255,255,0.06);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg, #3b0e12 0%, #1b0a0c 100%);
+    color: var(--cream);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  header{
+    padding: 36px 24px 12px;
+    text-align:center;
+  }
+  h1{
+    margin:0;
+    font-family:"Playfair Display", serif;
+    font-size:clamp(28px, 4vw, 44px);
+    color: var(--gold);
+    letter-spacing:1px;
+    text-shadow: 0 4px 18px rgba(0,0,0,0.6);
+  }
+  p.lead{
+    margin:10px 0 0;
+    color:#f6eede;
+    opacity:0.95;
+  }
+
+  .container{
+    max-width:1100px;
+    margin:28px auto;
+    padding: 24px;
+  }
+
+  /* grid of cards */
+  .grid{
+    display:grid;
+    gap:18px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    align-items:start;
+  }
+
+  /* card styles */
+  .card{
+    perspective:1200px;
+    height:220px;
+  }
+  .card-inner{
+    position:relative;
+    width:100%;
+    height:100%;
+    transform-style:preserve-3d;
+    transition: transform 700ms cubic-bezier(.2,.8,.2,1);
+    border-radius:14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    cursor:pointer;
+  }
+
+  .card:hover .shine { opacity:0.12; transform: translateY(-6px); }
+
+  .card-front, .card-back{
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    border-radius:14px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+  }
+
+  .card-front{
+    background: linear-gradient(145deg, var(--bordeaux) 0%, var(--bordeaux-2) 100%);
+    color: var(--cream);
+    transform: rotateY(0deg);
+  }
+
+  .card-front .number{
+    text-align:center;
+  }
+  .card-front .number h2{
+    margin:0;
+    font-family:"Playfair Display", serif;
+    font-size:48px;
+    color:var(--gold);
+    text-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  }
+  .card-front .number p{
+    margin:6px 0 0;
+    font-weight:600;
+    letter-spacing:0.6px;
+    opacity:0.95;
+  }
+
+  .card-back{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+    transform: rotateY(180deg);
+    border: 1px solid rgba(212,175,55,0.12);
+    color: #fff;
+  }
+
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+
+  .message{
+    font-size:14px;
+    line-height:1.35;
+    max-height:100%;
+    overflow:auto;
+    text-align:center;
+    padding:8px 6px;
+  }
+
+  .message h3{
+    margin:0 0 6px;
+    font-family:"Playfair Display", serif;
+    color:var(--gold);
+    font-size:18px;
+  }
+
+  .message p{
+    margin:0;
+    color: #fff;
+  }
+
+  /* decorative */
+  .shine{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background: linear-gradient(120deg, rgba(255,255,255,0.06), rgba(255,255,255,0.00));
+    opacity:0.06;
+    transition: all 300ms ease;
+  }
+
+  footer.controls{
+    margin-top:22px;
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .btn{
+    background:transparent;
+    border:1px solid rgba(212,175,55,0.16);
+    color:var(--gold);
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    backdrop-filter: blur(6px);
+  }
+  .btn.alt{
+    border-color: rgba(255,255,255,0.06);
+    color:#fff;
+  }
+
+  /* small screen tweaks */
+  @media (max-width:520px){
+    .card{ height:180px; }
+    .card-front .number h2{ font-size:40px; }
+  }
+
+  /* confetti canvas */
+  #confetti {
+    position:fixed;
+    left:0; top:0;
+    width:100%; height:100%;
+    pointer-events:none;
+    z-index:1000;
+  }
+
+  /* instructions box */
+  .note{
+    margin:14px auto 0;
+    text-align:center;
+    color:#f7ead6;
+    font-size:13px;
+    opacity:0.95;
+  }
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+
+<header>
+  <h1>Joyeux 19ᵉ anniversaire 🎉</h1>
+  <p class="lead">19 lettres spéciales pour ta sœur — couleur bordeaux & doré</p>
+</header>
+
+<main class="container">
+  <div class="grid" id="lettersGrid">
+
+    <!-- 19 cards : change the back content between <p>...</p> -->
+    <!-- We'll generate them with JS, but here's sample structure for one:
+    <div class="card" data-index="1">
+      <div class="card-inner">
+        <div class="card-front">
+          <div class="number"><h2>1</h2><p>Lettre 1</p></div>
+          <div class="shine"></div>
+        </div>
+        <div class="card-back">
+          <div class="message">
+            <h3>Pour toi</h3>
+            <p>Contenu de la lettre 1...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    -->
+
+  </div>
+
+  <div class="note">
+    Clique sur chaque carte pour la retourner et lire la lettre. Tu peux modifier les textes dans le code HTML (section JS) pour personnaliser chaque verso.
+  </div>
+
+  <footer class="controls">
+    <button class="btn" id="shuffleBtn">Mélanger l'ordre</button>
+    <button class="btn" id="resetBtn">Remettre dans l'ordre</button>
+    <button class="btn alt" id="printBtn">Imprimer / Enregistrer en PDF</button>
+    <button class="btn" id="celebrateBtn">Lancer la fête ✨</button>
+  </footer>
+</main>
+
+<script>
+/* --------- Contenu des 19 lettres ---------
+   Remplace les textes ci-dessous par les messages que tu veux
+   Chaque élément a : title (court) et text (contenu complet, peut contenir <br>).
+-------------------------------------------*/
+const lettersContent = [
+  {title: "Lettre 1", titleShort: "1", text: "Ma chère sœur,<br>Pour tes 19 ans je te souhaite tout le bonheur du monde. Tu es incroyable."},
+  {title: "Lettre 2", titleShort: "2", text: "Ta gentillesse illumine nos journées. N'oublie jamais ta valeur."},
+  {title: "Lettre 3", titleShort: "3", text: "Que cette année t'apporte des rêves réalisés et des fous rires partagés."},
+  {title: "Lettre 4", titleShort: "4", text: "Continue à oser, à apprendre et à t'aimer."},
+  {title: "Lettre 5", titleShort: "5", text: "Je suis fier·e de toi chaque jour."},
+  {title: "Lettre 6", titleShort: "6", text: "Souviens-toi : même les petites victoires comptent."},
+  {title: "Lettre 7", titleShort: "7", text: "Reste curieuse et garde ce cœur généreux."},
+  {title: "Lettre 8", titleShort: "8", text: "Pour toi : une année pleine d'aventures."},
+  {title: "Lettre 9", titleShort: "9", text: "Que l'amour et la santé te suivent partout."},
+  {title: "Lettre 10", titleShort: "10", text: "N'hésite pas à demander de l'aide — tu n'es jamais seule."},
+  {title: "Lettre 11", titleShort: "11", text: "Garde ta force, même dans les moments d'incertitude."},
+  {title: "Lettre 12", titleShort: "12", text: "Tu es capable de grandes choses — crois en toi."},
+  {title: "Lettre 13", titleShort: "13", text: "Souvenir : notre meilleure rigolade ensemble... (ajoute ton anecdote)"},
+  {title: "Lettre 14", titleShort: "14", text: "Je te souhaite des rencontres bienveillantes et inspirantes."},
+  {title: "Lettre 15", titleShort: "15", text: "Rêve grand, travaille avec cœur, et savoure le voyage."},
+  {title: "Lettre 16", titleShort: "16", text: "Un énorme câlin (virtuel) et tout mon amour."},
+  {title: "Lettre 17", titleShort: "17", text: "Merci d'être toi — authentique et lumineuse."},
+  {title: "Lettre 18", titleShort: "18", text: "19 sera une belle année — prête pour l'aventure ?"},
+  {title: "Lettre 19", titleShort: "19", text: "Bonne fête ! On t'aime fort ❤️"}
+];
+
+/* ---------- Génération des cartes ---------- */
+const grid = document.getElementById('lettersGrid');
+
+function createCard(idx, content){
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.setAttribute('data-index', idx+1);
+
+  const inner = document.createElement('div');
+  inner.className = 'card-inner';
+
+  const front = document.createElement('div');
+  front.className = 'card-front';
+  front.innerHTML = `
+    <div class="number">
+      <h2>${content.titleShort}</h2>
+      <p>${content.title}</p>
+    </div>
+    <div class="shine"></div>
+  `;
+
+  const back = document.createElement('div');
+  back.className = 'card-back';
+  back.innerHTML = `
+    <div class="message">
+      <h3>${content.title}</h3>
+      <p>${content.text}</p>
+    </div>
+  `;
+
+  inner.appendChild(front);
+  inner.appendChild(back);
+  card.appendChild(inner);
+
+  // click to flip
+  card.addEventListener('click', function(e){
+    card.classList.toggle('flipped');
+  });
+
+  return card;
+}
+
+function renderGrid(order){
+  grid.innerHTML = '';
+  order.forEach(i => {
+    const content = lettersContent[i];
+    grid.appendChild(createCard(i, content));
+  });
+}
+
+// initial order 0..18
+let currentOrder = Array.from(Array(lettersContent.length).keys());
+renderGrid(currentOrder);
+
+/* ---------- boutons ---------- */
+document.getElementById('shuffleBtn').addEventListener('click', () => {
+  currentOrder = shuffleArray(currentOrder);
+  renderGrid(currentOrder);
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  currentOrder = Array.from(Array(lettersContent.length).keys());
+  renderGrid(currentOrder);
+});
+
+document.getElementById('printBtn').addEventListener('click', () => {
+  // before printing, expand all backs so content is visible
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(c => c.classList.add('flipped'));
+  setTimeout(() => window.print(), 300);
+  // restore after print dialog (best effort)
+  setTimeout(()=> cards.forEach(c=>c.classList.remove('flipped')), 1500);
+});
+
+document.getElementById('celebrateBtn').addEventListener('click', () => {
+  launchConfetti();
+});
+
+/* ---------- helpers ---------- */
+function shuffleArray(a){
+  const arr = a.slice();
+  for(let i=arr.length-1; i>0; i--){
+    const j = Math.floor(Math.random()* (i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/* ---------- simple confetti (canvas) ---------- */
+function launchConfetti(){
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  let W = canvas.width = window.innerWidth;
+  let H = canvas.height = window.innerHeight;
+  const pieces = [];
+  const count = 120;
+  for(let i=0;i<count;i++){
+    pieces.push({
+      x: Math.random()*W,
+      y: Math.random()*H - H,
+      r: (Math.random()*8)+4,
+      d: (Math.random()*count)+10,
+      color: Math.random()>0.5 ? '#d4af37' : '#fff4e6',
+      tilt: Math.random()*10 - 10,
+      tiltSpeed: Math.random()*0.1+0.05,
+      speed: Math.random()*2+1
+    });
+  }
+
+  let anim;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<pieces.length;i++){
+      const p = pieces[i];
+      ctx.beginPath();
+      ctx.moveTo(p.x + p.tilt, p.y);
+      ctx.lineTo(p.x + p.tilt + p.r, p.y + p.r*0.6);
+      ctx.lineTo(p.x + p.tilt - p.r, p.y + p.r*0.6);
+      ctx.closePath();
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      p.tilt += p.tiltSpeed;
+      p.y += p.speed;
+      if(p.y > H + 50){
+        p.y = -10;
+        p.x = Math.random()*W;
+      }
+    }
+    anim = requestAnimationFrame(draw);
+  }
+  draw();
+
+  // stop after 7s
+  setTimeout(()=> { cancelAnimationFrame(anim); ctx.clearRect(0,0,W,H); }, 7000);
+}
+
+/* handle resize */
+window.addEventListener('resize', () => {
+  const canvas = document.getElementById('confetti');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+/* Optional: accessibility - allow flip via Enter when focused */
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter' || e.key === ' '){
+    const el = document.activeElement;
+    if(el && el.classList && el.classList.contains('card')){
+      el.classList.toggle('flipped');
+    }
+  }
+});
+
+/* make cards focusable for keyboard users */
+function makeCardsFocusable(){
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(c => c.setAttribute('tabindex','0'));
+}
+makeCardsFocusable();
+
+</script>
+</body>
+</html>
